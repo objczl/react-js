@@ -24,13 +24,6 @@ jobs:
     - name: Run ESLint
       id: eslint
       run: npx eslint .
-      continue-on-error: true
-    - name: Check ESLint results
-      run: |
-        if [ -n "$(jq '.errorCount' ${{ steps.eslint.outputs.stdout }})" ]; then
-          echo "ESLint found errors. Cancelling release."
-          exit 1
-        fi
 
     - run: npm run build --if-present
     - name: Create release ZIP
