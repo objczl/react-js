@@ -20,11 +20,24 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
+
+    - name: Run ESLint
+      id: eslint
+      run: npx eslint .
+      continue-on-error: true
+    - name: Check ESLint results
+      run: |
+        if [ -n "$(jq '.errorCount' ${{ steps.eslint.outputs.stdout }})" ]; then
+          echo "ESLint found errors. Cancelling release."
+          exit 1
+        fi
+
     - run: npm run build --if-present
     - name: Create release ZIP
       run: |
         mkdir release
         zip -r release/project-release.zip build
+
     - name: Upload release artifact
       uses: actions/upload-artifact@v4
       with:
