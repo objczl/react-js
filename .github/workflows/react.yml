@@ -21,3 +21,12 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build --if-present
+    - name: Create release ZIP
+        run: |
+          mkdir release
+          zip -r release/project-release.zip build
+    - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-release
+          path: release/project-release.zip
